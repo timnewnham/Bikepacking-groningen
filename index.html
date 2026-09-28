@@ -23,9 +23,9 @@
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --ground: #18130F;
-      --ground-raised: #221C15;
-      --ground-raised-2: #2C2419;
+      --ground: #332F28;
+      --ground-raised: #3F3A31;
+      --ground-raised-2: #4B453A;
       --ink: #F3EBDD;
       --ink-soft: #BAAB97;
       --accent: #F0954E;
@@ -38,9 +38,9 @@
     }
   }
   :root[data-theme="dark"] {
-    --ground: #18130F;
-    --ground-raised: #221C15;
-    --ground-raised-2: #2C2419;
+    --ground: #332F28;
+    --ground-raised: #3F3A31;
+    --ground-raised-2: #4B453A;
     --ink: #F3EBDD;
     --ink-soft: #BAAB97;
     --accent: #F0954E;
@@ -211,7 +211,7 @@
   }
 
   /* ---------- Bikes ---------- */
-  .bike-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .bike-grid { display: grid; grid-template-columns: 1fr; max-width: 640px; gap: 24px; }
   .bike-card { background: var(--ground-raised); border-radius: 18px; padding: 26px; }
   .bike-card h3 { font-size: 1.35rem; margin-top: 10px; }
   .bike-card .tag {
@@ -411,9 +411,9 @@
   <section id="bikes">
     <div class="wrap">
       <div class="section-head">
-        <p class="eyebrow">The fleet</p>
-        <h2>Bikes &amp; equipment</h2>
-        <p>Two tourers, set up for multi-day loaded riding on gravel, forest paths and quiet lanes. Both come fitted to you at pickup, with the full kit below included as standard.</p>
+        <p class="eyebrow">The bike</p>
+        <h2>The bike &amp; equipment</h2>
+        <p>One tourer, set up for multi-day loaded riding on gravel, forest paths and quiet lanes. It comes fitted to you at pickup, with the full kit below included as standard.</p>
       </div>
       <div class="bike-grid">
         <div class="bike-card">
@@ -424,17 +424,6 @@
             <tr><td>Drivetrain</td><td>Pinion gearbox, Gates carbon belt</td></tr>
             <tr><td>Frame</td><td>Steel, front &amp; rear rack mounts</td></tr>
             <tr><td>Best for</td><td>Long loaded tours, low fuss, wet weather</td></tr>
-            <tr><td>Fit range</td><td>Ask us for sizing when you book</td></tr>
-          </table>
-        </div>
-        <div class="bike-card">
-          <span class="tag">Tumbleweed Tanami</span>
-          <h3>The big-tyre explorer</h3>
-          <p class="desc">A rigid steel adventure bike with room for serious rubber, happiest when the route turns into forest gravel or singletrack. The more playful of the two.</p>
-          <table class="spec-table">
-            <tr><td>Frame</td><td>Rigid steel, high tyre clearance</td></tr>
-            <tr><td>Best for</td><td>Rougher tracks, more technical terrain</td></tr>
-            <tr><td>Character</td><td>Stable, forgiving, built for loaded off-road</td></tr>
             <tr><td>Fit range</td><td>Ask us for sizing when you book</td></tr>
           </table>
         </div>
@@ -504,13 +493,6 @@
           <label class="pkg-opt"><input type="radio" name="pkgLen" id="pkgTwoWeek" value="14"> Two weeks, 14 days &mdash; &euro;320</label>
 
           <div class="selection-summary" id="selectionSummary">Pick a start date on the calendar.</div>
-
-          <label for="bikeChoice">Which bike</label>
-          <div class="radio-row">
-            <label class="radio-opt"><input type="radio" name="bikeChoice" id="bikeOutback" value="Tout Terrain Outback 2" checked> Outback 2</label>
-            <label class="radio-opt"><input type="radio" name="bikeChoice" id="bikeTanami" value="Tumbleweed Tanami"> Tanami</label>
-            <label class="radio-opt"><input type="radio" name="bikeChoice" id="bikeEither" value="Either, whatever fits"> Either</label>
-          </div>
 
           <label for="deliveryOption">Pickup or delivery</label>
           <div class="radio-row">
@@ -604,7 +586,7 @@
         <div class="route-card">
           <div class="rtag">Drenthe &rarr; Westerwolde</div>
           <h3>Westerwolde forests</h3>
-          <p>More forest gravel and a bit more relief, by Dutch standards. Better suited to the Tanami if the tracks turn rough.</p>
+          <p>More forest gravel and a bit more relief, by Dutch standards. The Outback 2 handles it fine, just expect a slower pace than the flat routes.</p>
           <div class="route-stats"><span>~2 days</span><span>forest gravel</span></div>
         </div>
       </div>
@@ -826,7 +808,7 @@
     var address = document.getElementById("address").value.trim();
     if (deliveryOpt === "delivery" && !address) { showConfirm("Add a delivery address in Groningen or Drenthe.", false); return; }
 
-    var bike = document.querySelector('input[name="bikeChoice"]:checked').value;
+    var bike = "Tout Terrain Outback 2";
     var notes = document.getElementById("riderNotes").value.trim();
     var end = addDays(selectedStart, len - 1);
 
