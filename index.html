@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bikepacking Groningen</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Figtree:ital,wght@0,400;0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@500;700&display=swap');
+
+  :root {
+    --ground: #F5EFE4;
+    --ground-raised: #ECE3D2;
+    --ground-raised-2: #E2D6BF;
+    --ink: #241E19;
+    --ink-soft: #776C5E;
+    --accent: #DD7A2E;
+    --accent-contrast: #FFF8EE;
+    --accent-2: #75729C;
+    --accent-2-contrast: #FCFAFF;
+    --border: #E1D3BB;
+    --danger: #AE4130;
+    --danger-soft: #EBDACB;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #18130F;
+      --ground-raised: #221C15;
+      --ground-raised-2: #2C2419;
+      --ink: #F3EBDD;
+      --ink-soft: #BAAB97;
+      --accent: #F0954E;
+      --accent-contrast: #201306;
+      --accent-2: #A9A6D6;
+      --accent-2-contrast: #17152A;
+      --border: #392E20;
+      --danger: #E38F76;
+      --danger-soft: #3A2A22;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #18130F;
+    --ground-raised: #221C15;
+    --ground-raised-2: #2C2419;
+    --ink: #F3EBDD;
+    --ink-soft: #BAAB97;
+    --accent: #F0954E;
+    --accent-contrast: #201306;
+    --accent-2: #A9A6D6;
+    --accent-2-contrast: #17152A;
+    --border: #392E20;
+    --danger: #E38F76;
+    --danger-soft: #3A2A22;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: 'Figtree', 'Segoe UI', Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+  h1, h2, h3, .display {
+    font-family: 'Bricolage Grotesque', 'Arial Narrow', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    margin: 0;
+    color: var(--ink);
+  }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace; }
+  a { color: var(--accent); }
+  img, svg { max-width: 100%; }
+  [hidden] { display: none !important; }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding-inline: 20px; }
+
+  /* ---------- Nav ---------- */
+  header.site {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 50;
+    background: color-mix(in srgb, var(--ground) 90%, transparent);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--border);
+  }
+  .navbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px; }
+  .brand { display: flex; align-items: center; gap: 9px; text-decoration: none; color: var(--ink); }
+  .brand .mark {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--accent); color: var(--accent-contrast);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 0.85rem;
+    transform: rotate(-8deg);
+  }
+  .brand .name { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 1.08rem; letter-spacing: -0.01em; }
+  nav.links { display: flex; gap: 2px; flex-wrap: wrap; }
+  nav.links a {
+    text-decoration: none; color: var(--ink-soft); font-family: 'Figtree', sans-serif;
+    font-weight: 600; font-size: 0.9rem; padding: 8px 12px; border-radius: 20px;
+  }
+  nav.links a:hover { color: var(--ink); background: var(--ground-raised); }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'Figtree', sans-serif; font-weight: 700; font-size: 0.95rem;
+    padding: 13px 24px; border-radius: 999px; border: 1px solid transparent;
+    cursor: pointer; text-decoration: none; line-height: 1;
+    transition: transform 0.15s ease;
+  }
+  .btn-primary { background: var(--accent); color: var(--accent-contrast); }
+  .btn-primary:hover { transform: translateY(-1px); filter: brightness(1.05); }
+  .btn-ghost { background: color-mix(in srgb, var(--ground) 40%, transparent); color: var(--ink); border-color: color-mix(in srgb, var(--ink) 25%, transparent); backdrop-filter: blur(4px); }
+  .btn-ghost:hover { background: var(--ground-raised); }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .btn { transition: none; } }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'Figtree', sans-serif; font-weight: 700; font-size: 0.82rem;
+    letter-spacing: 0.02em; color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    padding: 6px 14px; border-radius: 999px;
+  }
+
+  section { padding-block: 76px; border-bottom: 1px solid var(--border); }
+  section:last-of-type { border-bottom: none; }
+  .section-head { max-width: 640px; margin-bottom: 40px; }
+  .section-head h2 { font-size: clamp(1.7rem, 3.4vw, 2.4rem); margin-top: 14px; }
+  .section-head p { color: var(--ink-soft); margin-top: 14px; font-size: 1.02rem; }
+
+  /* ---------- Hero ---------- */
+  .hero { padding: 0; border-bottom: none; }
+  .hero-photo {
+    position: relative;
+    min-height: 640px;
+    display: flex;
+    align-items: flex-end;
+    background-image:
+      linear-gradient(180deg, rgba(20,14,8,0.15) 0%, rgba(20,14,8,0.15) 40%, rgba(20,12,6,0.88) 100%),
+      linear-gradient(90deg, rgba(15,10,6,0.55) 0%, rgba(15,10,6,0.05) 55%),
+      url("images/hero.jpg");
+    background-size: cover;
+    background-position: center 30%;
+    padding-top: calc(100px + env(safe-area-inset-top, 0px));
+  }
+  .hero-inner { padding-block: 44px 48px; width: 100%; }
+  .hero-photo .eyebrow { background: rgba(255,248,238,0.18); color: #FFF3E2; backdrop-filter: blur(3px); }
+  .hero-photo h1 { color: #FFF9F0; font-size: clamp(2.3rem, 5.4vw, 3.7rem); line-height: 1.04; margin-top: 16px; max-width: 16ch; }
+  .hero-photo .lede { color: #F3E9DA; font-size: 1.12rem; margin-top: 18px; max-width: 46ch; }
+  .hero-photo .cta-row { display: flex; gap: 12px; margin-top: 30px; flex-wrap: wrap; }
+  .hero-facts {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-top: 40px;
+  }
+  .hero-facts div {
+    background: rgba(255,248,238,0.12);
+    border: 1px solid rgba(255,248,238,0.22);
+    backdrop-filter: blur(4px);
+    border-radius: 14px;
+    padding: 12px 18px;
+    min-width: 130px;
+  }
+  .hero-facts .num { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 1.25rem; color: #FFF3E2; }
+  .hero-facts .lbl { color: #E9DCC8; font-size: 0.8rem; margin-top: 2px; }
+  .photo-credit {
+    position: absolute; right: 14px; bottom: 10px;
+    font-size: 0.7rem; color: rgba(255,248,238,0.55);
+  }
+  @media (max-width: 620px) {
+    .hero-photo { min-height: 560px; background-position: center 22%; }
+  }
+
+  /* ---------- Why rent ---------- */
+  .why-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .why-card {
+    background: var(--ground-raised);
+    border-radius: 18px;
+    padding: 28px;
+  }
+  .why-card .ic {
+    width: 42px; height: 42px; border-radius: 12px;
+    background: color-mix(in srgb, var(--accent) 18%, transparent);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent);
+  }
+  .why-card h3 { font-size: 1.2rem; margin-top: 16px; }
+  .why-card p { color: var(--ink-soft); margin-top: 8px; font-size: 0.98rem; }
+  @media (max-width: 700px) { .why-grid { grid-template-columns: 1fr; } }
+
+  .bonus-note {
+    margin-top: 22px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+  }
+  .bonus-note strong { color: var(--ink); }
+  .bonus-note .tag {
+    flex-shrink: 0;
+    font-family: 'Figtree', sans-serif; font-weight: 700; font-size: 0.72rem;
+    text-transform: uppercase; letter-spacing: 0.03em;
+    color: var(--accent-2); background: color-mix(in srgb, var(--accent-2) 16%, transparent);
+    padding: 4px 10px; border-radius: 999px;
+    transform: rotate(-3deg);
+  }
+
+  /* ---------- Bikes ---------- */
+  .bike-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .bike-card { background: var(--ground-raised); border-radius: 18px; padding: 26px; }
+  .bike-card h3 { font-size: 1.35rem; margin-top: 10px; }
+  .bike-card .tag {
+    display: inline-block; color: var(--accent-contrast); background: var(--accent);
+    font-family: 'Figtree', sans-serif; font-weight: 700; font-size: 0.78rem;
+    padding: 5px 13px; border-radius: 999px; transform: rotate(-2deg);
+  }
+  .bike-card p.desc { color: var(--ink-soft); margin-top: 12px; font-size: 0.97rem; }
+  .spec-table { width: 100%; border-collapse: collapse; margin-top: 18px; font-size: 0.9rem; }
+  .spec-table tr { border-top: 1px solid var(--border); }
+  .spec-table td { padding: 10px 0; vertical-align: top; }
+  .spec-table td:first-child { color: var(--ink-soft); font-weight: 600; width: 40%; }
+  @media (max-width: 760px) { .bike-grid { grid-template-columns: 1fr; } }
+
+  .gear-list {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .gear-list div { background: var(--ground-raised); border-radius: 14px; padding: 16px 18px; font-size: 0.94rem; }
+  .gear-list .g-title { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 0.85rem; color: var(--accent); margin-bottom: 4px; }
+  @media (max-width: 760px) { .gear-list { grid-template-columns: 1fr; } }
+
+  /* ---------- Pricing ---------- */
+  .price-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 8px; }
+  .price-card { border-radius: 18px; padding: 24px; background: var(--ground-raised); }
+  .price-card.feat { background: var(--ink); color: var(--ground); }
+  .price-card.feat .len, .price-card.feat .note { color: color-mix(in srgb, var(--ground) 70%, transparent); }
+  .price-card .len { font-weight: 600; font-size: 0.86rem; color: var(--ink-soft); }
+  .price-card .amt { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 2.1rem; margin-top: 8px; }
+  .price-card .amt span { font-size: 0.95rem; font-weight: 600; color: var(--ink-soft); }
+  .price-card.feat .amt span { color: color-mix(in srgb, var(--ground) 70%, transparent); }
+  .price-card .note { color: var(--ink-soft); font-size: 0.87rem; margin-top: 12px; }
+  .price-note { margin-top: 18px; font-size: 0.87rem; color: var(--ink-soft); border-left: 2px solid var(--accent); padding-left: 14px; }
+  @media (max-width: 760px) { .price-grid { grid-template-columns: 1fr; } }
+
+  /* ---------- Booking ---------- */
+  .booking-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; margin-top: 8px; }
+  @media (max-width: 860px) { .booking-grid { grid-template-columns: 1fr; } }
+
+  .cal-card, .form-card { border-radius: 18px; background: var(--ground-raised); padding: 22px; }
+  .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .cal-head .m { font-weight: 700; font-size: 0.92rem; }
+  .cal-nav-btn { background: var(--ground); border: 1px solid var(--border); color: var(--ink); width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
+  .cal-nav-btn:hover { background: var(--ground-raised-2); }
+  .cal-dow { display: grid; grid-template-columns: repeat(7, 1fr); font-size: 0.72rem; font-weight: 600; color: var(--ink-soft); text-align: center; margin-bottom: 6px; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-day {
+    aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+    border-radius: 9px; font-size: 0.86rem; background: var(--ground);
+    border: 1px solid transparent; cursor: pointer; color: var(--ink);
+  }
+  .cal-day.empty { background: transparent; cursor: default; }
+  .cal-day.past { color: var(--ink-soft); opacity: 0.35; cursor: not-allowed; }
+  .cal-day.booked { background: var(--danger-soft); color: var(--danger); cursor: not-allowed; text-decoration: line-through; }
+  .cal-day.selected { background: var(--accent); color: var(--accent-contrast); }
+  .cal-day.in-range { background: color-mix(in srgb, var(--accent) 32%, var(--ground)); }
+  .cal-day:not(.empty):not(.past):not(.booked):hover { border-color: var(--accent); }
+  .cal-legend { display: flex; gap: 16px; margin-top: 14px; font-size: 0.8rem; color: var(--ink-soft); flex-wrap: wrap; }
+  .cal-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .swatch { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+  .form-card label { display: block; font-weight: 700; font-size: 0.85rem; color: var(--ink); margin-top: 16px; margin-bottom: 7px; }
+  .form-card label:first-child { margin-top: 0; }
+  .form-card input[type="text"], .form-card input[type="email"], .form-card textarea {
+    width: 100%; background: var(--ground); border: 1px solid var(--border); border-radius: 10px;
+    padding: 11px 13px; color: var(--ink); font-family: 'Figtree', sans-serif; font-size: 0.96rem;
+  }
+  .form-card textarea { resize: vertical; min-height: 60px; }
+  .radio-row { display: flex; gap: 14px; flex-wrap: wrap; }
+  .radio-opt { display: flex; align-items: center; gap: 6px; font-size: 0.94rem; color: var(--ink); }
+  .pkg-opt { display: block; border: 1px solid var(--border); border-radius: 12px; padding: 11px 14px; margin-top: 8px; cursor: pointer; }
+  .pkg-opt:first-of-type { margin-top: 0; }
+  .pkg-opt input { margin-right: 8px; }
+  .selection-summary { margin-top: 16px; padding: 13px 15px; border-radius: 12px; background: var(--ground); border: 1px solid var(--border); font-size: 0.9rem; }
+  .selection-summary.warn { border-color: var(--danger); color: var(--danger); }
+  .form-note { font-size: 0.82rem; color: var(--ink-soft); margin-top: 14px; }
+  #bookConfirm { margin-top: 14px; padding: 13px 15px; border-radius: 12px; background: var(--danger-soft); color: var(--ink); font-size: 0.92rem; }
+  #bookConfirm.ok { background: color-mix(in srgb, var(--accent) 20%, var(--ground)); }
+  #bookUnavailable { margin-top: 14px; padding: 13px 15px; border-radius: 12px; background: var(--ground); border: 1px dashed var(--border); font-size: 0.85rem; color: var(--ink-soft); }
+
+  /* ---------- Process ---------- */
+  .process-list { display: flex; flex-direction: column; margin-top: 8px; }
+  .process-step { display: grid; grid-template-columns: 52px 1fr; gap: 20px; padding-block: 22px; border-top: 1px solid var(--border); }
+  .process-step:first-child { border-top: none; }
+  .process-step .step-n {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 1rem;
+  }
+  .process-step h3 { font-size: 1.12rem; }
+  .process-step p { color: var(--ink-soft); margin-top: 6px; font-size: 0.96rem; max-width: 56ch; }
+
+  /* ---------- Routes ---------- */
+  .route-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .route-card { border-radius: 18px; padding: 22px; background: var(--ground-raised); }
+  .route-card .rtag { font-weight: 700; font-size: 0.76rem; color: var(--accent-2); }
+  .route-card h3 { font-size: 1.12rem; margin-top: 8px; }
+  .route-card p { color: var(--ink-soft); font-size: 0.93rem; margin-top: 8px; }
+  .route-stats { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .route-stats span { font-size: 0.78rem; font-weight: 600; color: var(--ink); background: var(--ground); border-radius: 999px; padding: 5px 11px; }
+  @media (max-width: 860px) { .route-grid { grid-template-columns: 1fr; } }
+  .routes-footnote { margin-top: 26px; font-size: 0.92rem; color: var(--ink-soft); }
+
+  /* ---------- Future ---------- */
+  .future-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; align-items: start; }
+  .future-grid p { color: var(--ink-soft); }
+  .future-list { display: flex; flex-direction: column; gap: 16px; }
+  .future-item { background: var(--ground-raised); border-radius: 14px; padding: 16px 18px; }
+  .future-item .f-lbl { font-weight: 700; font-size: 0.78rem; color: var(--accent-2); }
+  .future-item p { margin-top: 4px; font-size: 0.93rem; }
+  @media (max-width: 860px) { .future-grid { grid-template-columns: 1fr; } }
+
+  /* ---------- Footer ---------- */
+  footer { padding-block: 48px calc(48px + env(safe-area-inset-bottom, 0px)); }
+  .footer-grid { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .footer-grid h3 { font-size: 1.1rem; }
+  .footer-grid p, .footer-grid a { color: var(--ink-soft); font-size: 0.94rem; }
+  .footer-grid a { display: block; margin-top: 5px; text-decoration: none; }
+  .footer-grid a:hover { color: var(--accent); }
+  .foot-note { font-size: 0.78rem; color: var(--ink-soft); margin-top: 32px; opacity: 0.75; }
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="wrap navbar">
+    <a href="#home" class="brand">
+      <span class="mark">B</span>
+      <span class="name">Bikepacking Groningen</span>
+    </a>
+    <nav class="links">
+      <a href="#bikes">Bikes &amp; gear</a>
+      <a href="#book">Book</a>
+      <a href="#process">Process</a>
+      <a href="#routes">Routes</a>
+      <a href="#future">Future</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="home">
+    <div class="hero-photo">
+      <div class="wrap hero-inner">
+        <p class="eyebrow">Weekend rides &amp; summer trips, from Haren</p>
+        <h1>Load up the bike and go chase a sunset.</h1>
+        <p class="lede">Rent a fully kitted gravel tourer, tent, cook set, bags, all of it, and disappear for a weekend or a proper two-week summer trip through Groningen, Drenthe, and beyond. Never ridden loaded before? That's half the fun of finding out.</p>
+        <div class="cta-row">
+          <a href="#book" class="btn btn-primary">Plan a trip</a>
+          <a href="#bikes" class="btn btn-ghost">See the bikes</a>
+        </div>
+        <div class="hero-facts">
+          <div><div class="num">3&ndash;14 days</div><div class="lbl">weekend to full holiday</div></div>
+          <div><div class="num">&euro;50</div><div class="lbl">delivered to your door</div></div>
+          <div><div class="num">All in</div><div class="lbl">tent to stove, included</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WHY RENT ============ -->
+  <section id="why">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">What you're actually renting</p>
+        <h2>A proper escape, not an errand.</h2>
+        <p>This isn't a spare bike for the shed. It's a loaded tourer and a full kit, ready to turn a free weekend or a chunk of your summer holiday into a trip.</p>
+      </div>
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="ic">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M12 3v18"/><circle cx="12" cy="12" r="9"/></svg>
+          </div>
+          <h3>Pick a direction and go</h3>
+          <p>No planning around your own bike being road-ready, no last-minute gear shop run. Book, collect, ride. A long weekend can start on a Friday afternoon.</p>
+        </div>
+        <div class="why-card">
+          <div class="ic">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a4 4 0 0 1 8 0v2"/></svg>
+          </div>
+          <h3>Everything already packed</h3>
+          <p>Tent, sleeping kit, stove, bags. It all comes fitted and ready, so the only thing you plan is where you're riding to.</p>
+        </div>
+      </div>
+      <div class="bonus-note">
+        <span class="tag">Also handy</span>
+        <p style="margin:0;"><strong>Weighing up buying your own tourer?</strong> Renting first is a good way to find out what you actually want, but that's a bonus, most people who book are just here for the trip.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BIKES & EQUIPMENT ============ -->
+  <section id="bikes">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">The fleet</p>
+        <h2>Bikes &amp; equipment</h2>
+        <p>Two tourers, set up for multi-day loaded riding on gravel, forest paths and quiet lanes. Both come fitted to you at pickup, with the full kit below included as standard.</p>
+      </div>
+      <div class="bike-grid">
+        <div class="bike-card">
+          <span class="tag">Tout Terrain Outback 2</span>
+          <h3>The low-maintenance workhorse</h3>
+          <p class="desc">A steel expedition tourer built around a Pinion gearbox and Gates belt drive, so there's no derailleur to wreck on a gravel road two days from anywhere. The bike I ride myself.</p>
+          <table class="spec-table">
+            <tr><td>Drivetrain</td><td>Pinion gearbox, Gates carbon belt</td></tr>
+            <tr><td>Frame</td><td>Steel, front &amp; rear rack mounts</td></tr>
+            <tr><td>Best for</td><td>Long loaded tours, low fuss, wet weather</td></tr>
+            <tr><td>Fit range</td><td>Ask us for sizing when you book</td></tr>
+          </table>
+        </div>
+        <div class="bike-card">
+          <span class="tag">Tumbleweed Tanami</span>
+          <h3>The big-tyre explorer</h3>
+          <p class="desc">A rigid steel adventure bike with room for serious rubber, happiest when the route turns into forest gravel or singletrack. The more playful of the two.</p>
+          <table class="spec-table">
+            <tr><td>Frame</td><td>Rigid steel, high tyre clearance</td></tr>
+            <tr><td>Best for</td><td>Rougher tracks, more technical terrain</td></tr>
+            <tr><td>Character</td><td>Stable, forgiving, built for loaded off-road</td></tr>
+            <tr><td>Fit range</td><td>Ask us for sizing when you book</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="gear-list">
+        <div><div class="g-title">Shelter</div>MSR Hubba Hubba tent, footprint included</div>
+        <div><div class="g-title">Sleep</div>Mat and sleeping bag, packed size checked against your bags</div>
+        <div><div class="g-title">Cook</div>Compact stove, pot, fuel for the trip</div>
+        <div><div class="g-title">Carry</div>Frame bag, seat pack, handlebar roll, top tube bag</div>
+        <div><div class="g-title">Power &amp; light</div>Lights front and rear, power bank</div>
+        <div><div class="g-title">Repair</div>Pump, multitool, spares, and a quick how-to at pickup</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BOOKING ============ -->
+  <section id="book">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Rates &amp; booking</p>
+        <h2>Pick your dates</h2>
+        <p>Choose a start date on the calendar and a trip length. Delivery to Groningen or Drenthe is &euro;50 on top, or collect for free in Haren, coffee included.</p>
+      </div>
+
+      <div class="price-grid">
+        <div class="price-card">
+          <div class="len">Weekend &middot; 3 days</div>
+          <div class="amt">&euro;85</div>
+          <div class="note">Fri pickup, Mon return. A proper long weekend.</div>
+        </div>
+        <div class="price-card feat">
+          <div class="len">Week &middot; 7 days</div>
+          <div class="amt">&euro;180</div>
+          <div class="note">Our most booked trip length.</div>
+        </div>
+        <div class="price-card">
+          <div class="len">Two weeks &middot; 14 days</div>
+          <div class="amt">&euro;320</div>
+          <div class="note">A proper summer holiday, best value per day.</div>
+        </div>
+      </div>
+      <p class="price-note">Example rates, shown here so you can see how the page reads. Swap in your real pricing before this goes live.</p>
+
+      <div class="booking-grid">
+        <div class="cal-card">
+          <div class="cal-head">
+            <button class="cal-nav-btn" id="calPrev" type="button" aria-label="Previous month">&larr;</button>
+            <span class="m" id="calMonthLabel">Month</span>
+            <button class="cal-nav-btn" id="calNext" type="button" aria-label="Next month">&rarr;</button>
+          </div>
+          <div class="cal-dow">
+            <span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+          <div class="cal-legend">
+            <span><span class="swatch" style="background:var(--accent)"></span> selected</span>
+            <span><span class="swatch" style="background:var(--danger-soft)"></span> already booked</span>
+          </div>
+          <div id="bookUnavailable" hidden>Live availability needs the booking database, which isn't reachable in this view right now. Use the contact details below to ask about dates instead.</div>
+        </div>
+
+        <div class="form-card">
+          <label for="pkgLen">Trip length</label>
+          <label class="pkg-opt"><input type="radio" name="pkgLen" id="pkgWeekend" value="3" checked> Weekend, 3 days &mdash; &euro;85</label>
+          <label class="pkg-opt"><input type="radio" name="pkgLen" id="pkgWeek" value="7"> Week, 7 days &mdash; &euro;180</label>
+          <label class="pkg-opt"><input type="radio" name="pkgLen" id="pkgTwoWeek" value="14"> Two weeks, 14 days &mdash; &euro;320</label>
+
+          <div class="selection-summary" id="selectionSummary">Pick a start date on the calendar.</div>
+
+          <label for="bikeChoice">Which bike</label>
+          <div class="radio-row">
+            <label class="radio-opt"><input type="radio" name="bikeChoice" id="bikeOutback" value="Tout Terrain Outback 2" checked> Outback 2</label>
+            <label class="radio-opt"><input type="radio" name="bikeChoice" id="bikeTanami" value="Tumbleweed Tanami"> Tanami</label>
+            <label class="radio-opt"><input type="radio" name="bikeChoice" id="bikeEither" value="Either, whatever fits"> Either</label>
+          </div>
+
+          <label for="deliveryOption">Pickup or delivery</label>
+          <div class="radio-row">
+            <label class="radio-opt"><input type="radio" name="deliveryOption" id="optPickup" value="pickup" checked> Pickup in Haren</label>
+            <label class="radio-opt"><input type="radio" name="deliveryOption" id="optDelivery" value="delivery"> Delivery, +&euro;50</label>
+          </div>
+
+          <div id="addressWrap" hidden>
+            <label for="address">Delivery address (Groningen or Drenthe)</label>
+            <input type="text" id="address" placeholder="Street, number, postcode, town">
+          </div>
+
+          <label for="riderName">Name</label>
+          <input type="text" id="riderName" placeholder="Your name">
+
+          <label for="riderEmail">Email</label>
+          <input type="email" id="riderEmail" placeholder="you@example.com">
+
+          <label for="riderNotes">Anything we should know</label>
+          <textarea id="riderNotes" placeholder="Height, riding experience, route plans, questions"></textarea>
+
+          <button class="btn btn-primary" id="submitBooking" type="button" style="margin-top:18px; width:100%; justify-content:center;">Send booking request</button>
+          <p class="form-note">This sends a request, not a confirmed booking. We'll reply by email to confirm and take a deposit.</p>
+          <div id="bookConfirm" hidden></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROCESS ============ -->
+  <section id="process">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">How it works</p>
+        <h2>From booking to the first pedal stroke</h2>
+      </div>
+      <div class="process-list">
+        <div class="process-step">
+          <span class="step-n">01</span>
+          <div>
+            <h3>Choose your dates and bike</h3>
+            <p>Book above: pick a start date, a trip length, and whether you're collecting or want delivery.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-n">02</span>
+          <div>
+            <h3>Meet in Haren, or wait for delivery</h3>
+            <p>Collect from our base in Haren, coffee included, or we bring the bike and kit to your door in Groningen or Drenthe for &euro;50.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-n">03</span>
+          <div>
+            <h3>Paperwork and a proper equipment check</h3>
+            <p>ID and a short rental agreement, then we go through the bike and every piece of kit together, so nothing is a surprise on the road.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <span class="step-n">04</span>
+          <div>
+            <h3>You're on your way</h3>
+            <p>Loaded, briefed, and pointed at your route.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ROUTES ============ -->
+  <section id="routes">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Where to ride</p>
+        <h2>Local routes, two to three days</h2>
+        <p>A handful of loops from Groningen and Drenthe to get you started. Exact tracks and distances get sharper once you book, we'll send GPX files and a short briefing.</p>
+      </div>
+      <div class="route-grid">
+        <div class="route-card">
+          <div class="rtag">Groningen &rarr; Drenthe</div>
+          <h3>Drentsche Aa valley</h3>
+          <p>Quiet lanes and gravel through the stream valley south of the city. Flat, sheltered, and an easy-going first loaded trip.</p>
+          <div class="route-stats"><span>~2 days</span><span>mostly flat</span></div>
+        </div>
+        <div class="route-card">
+          <div class="rtag">Groningen &rarr; Wadden coast</div>
+          <h3>Lauwersmeer &amp; the coast</h3>
+          <p>Open polder and lake edge out to the Wadden coast. Big skies, wide horizons, and a proper sunset at the end of the day.</p>
+          <div class="route-stats"><span>~2&ndash;3 days</span><span>wind-exposed</span></div>
+        </div>
+        <div class="route-card">
+          <div class="rtag">Drenthe &rarr; Westerwolde</div>
+          <h3>Westerwolde forests</h3>
+          <p>More forest gravel and a bit more relief, by Dutch standards. Better suited to the Tanami if the tracks turn rough.</p>
+          <div class="route-stats"><span>~2 days</span><span>forest gravel</span></div>
+        </div>
+      </div>
+      <p class="routes-footnote">Planning something further afield once you've got the bug? <a href="https://bikepacking.com" target="_blank" rel="noopener">bikepacking.com</a> is the best resource on the internet for route inspiration.</p>
+    </div>
+  </section>
+
+  <!-- ============ FUTURE ============ -->
+  <section id="future">
+    <div class="wrap">
+      <div class="future-grid">
+        <div>
+          <p class="eyebrow">Looking ahead</p>
+          <h2>Building a bikepacking community in Groningen</h2>
+          <p style="margin-top:14px;">This started as a way to get more people out on proper loaded trips without buying a bike and a full kit first. Longer term, the plan is bigger than rentals: a proper local scene around trip planning, group rides, and swapping route notes, and somewhere to gather around it.</p>
+        </div>
+        <div class="future-list">
+          <div class="future-item">
+            <div class="f-lbl">Next</div>
+            <p>Group rides and meetups for anyone curious about bikepacking around Groningen.</p>
+          </div>
+          <div class="future-item">
+            <div class="f-lbl">Later</div>
+            <p>A small cafe as a base for trip planning and community building, somewhere to sit with a map before a trip and swap stories after one.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap footer-grid">
+    <div>
+      <h3>Bikepacking Groningen</h3>
+      <p style="margin-top:8px; max-width:38ch;">Rent a fully loaded bikepacking setup and go make a weekend of it.</p>
+    </div>
+    <div>
+      <a href="#book">Book a bike</a>
+      <a href="mailto:hello@bikepackinggroningen.nl">hello@bikepackinggroningen.nl</a>
+      <a href="#home">Haren, Groningen</a>
+    </div>
+  </div>
+  <div class="wrap foot-note">Placeholder email above, swap in your real one before launch.</div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var PKG = { "3": { label: "Weekend", price: 85 }, "7": { label: "Week", price: 180 }, "14": { label: "Two weeks", price: 320 } };
+  var bookedDates = new Set(); // "YYYY-MM-DD" strings, inclusive days already committed
+  var viewMonth = new Date(); viewMonth.setDate(1);
+  var selectedStart = null; // Date
+  var dbNs = null;
+  var bookingsCol = null;
+
+  function pad(n) { return n < 10 ? "0" + n : "" + n; }
+  function toKey(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function addDays(d, n) { var r = new Date(d); r.setDate(r.getDate() + n); return r; }
+  function startOfDay(d) { var r = new Date(d); r.setHours(0,0,0,0); return r; }
+  // Parses a "YYYY-MM-DD" key as a LOCAL date, avoiding the UTC-midnight
+  // parsing `new Date("YYYY-MM-DD")` does, which can shift the day in
+  // timezones west of UTC.
+  function parseKey(key) {
+    var parts = key.split("-");
+    return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+  }
+  var TODAY = startOfDay(new Date());
+  var MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+  function currentLength() {
+    var checked = document.querySelector('input[name="pkgLen"]:checked');
+    return checked ? parseInt(checked.value, 10) : 3;
+  }
+
+  function rangeFor(start, len) {
+    var days = [];
+    for (var i = 0; i < len; i++) days.push(addDays(start, i));
+    return days;
+  }
+
+  function rangeIsFree(start, len) {
+    var days = rangeFor(start, len);
+    for (var i = 0; i < days.length; i++) {
+      if (bookedDates.has(toKey(days[i]))) return false;
+    }
+    return true;
+  }
+
+  function renderCalendar() {
+    var grid = document.getElementById("calGrid");
+    var label = document.getElementById("calMonthLabel");
+    label.textContent = MONTH_NAMES[viewMonth.getMonth()] + " " + viewMonth.getFullYear();
+    grid.innerHTML = "";
+
+    var first = new Date(viewMonth.getFullYear(), viewMonth.getMonth(), 1);
+    var firstDow = (first.getDay() + 6) % 7; // Monday = 0
+    var daysInMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 0).getDate();
+
+    for (var i = 0; i < firstDow; i++) {
+      var empty = document.createElement("div");
+      empty.className = "cal-day empty";
+      grid.appendChild(empty);
+    }
+
+    var len = currentLength();
+    var selRangeKeys = new Set();
+    if (selectedStart) {
+      rangeFor(selectedStart, len).forEach(function (d) { selRangeKeys.add(toKey(d)); });
+    }
+
+    for (var day = 1; day <= daysInMonth; day++) {
+      var d = new Date(viewMonth.getFullYear(), viewMonth.getMonth(), day);
+      var key = toKey(d);
+      var cell = document.createElement("div");
+      cell.className = "cal-day";
+      cell.textContent = String(day);
+
+      var isPast = d < TODAY;
+      var isBooked = bookedDates.has(key);
+
+      if (isPast) cell.classList.add("past");
+      else if (isBooked) cell.classList.add("booked");
+      else {
+        cell.addEventListener("click", (function (clickedDate) {
+          return function () {
+            selectedStart = clickedDate;
+            renderCalendar();
+            updateSummary();
+          };
+        })(d));
+      }
+
+      if (selectedStart && toKey(selectedStart) === key) cell.classList.add("selected");
+      else if (selRangeKeys.has(key)) cell.classList.add("in-range");
+
+      grid.appendChild(cell);
+    }
+  }
+
+  function updateSummary() {
+    var box = document.getElementById("selectionSummary");
+    var submitBtn = document.getElementById("submitBooking");
+    if (!selectedStart) {
+      box.textContent = "Pick a start date on the calendar.";
+      box.classList.remove("warn");
+      submitBtn.disabled = false;
+      return;
+    }
+    var len = currentLength();
+    var end = addDays(selectedStart, len - 1);
+    var free = rangeIsFree(selectedStart, len);
+    var fmt = function (d) { return d.toLocaleDateString(undefined, { day: "numeric", month: "short" }); };
+    if (free) {
+      box.textContent = PKG[String(len)].label + ": " + fmt(selectedStart) + " → " + fmt(end);
+      box.classList.remove("warn");
+      submitBtn.disabled = false;
+    } else {
+      box.textContent = "That start date overlaps an existing booking within a " + len + "-day hire. Pick another date.";
+      box.classList.add("warn");
+      submitBtn.disabled = true;
+    }
+  }
+
+  function expandBookingDoc(data) {
+    if (!data || !data.startDate || !data.endDate) return;
+    var cur = parseKey(data.startDate);
+    var last = parseKey(data.endDate);
+    while (cur <= last) {
+      bookedDates.add(toKey(cur));
+      cur = addDays(cur, 1);
+    }
+  }
+
+  function initDb() {
+    if (!window.claude || typeof window.claude.use !== "function") {
+      document.getElementById("bookUnavailable").hidden = false;
+      return;
+    }
+    window.claude.use("db").then(function (db) {
+      if (!db) {
+        document.getElementById("bookUnavailable").hidden = false;
+        return;
+      }
+      dbNs = db;
+      bookingsCol = db.collection("bookings");
+      bookingsCol.onSnapshot(function (snap) {
+        bookedDates = new Set();
+        snap.docs.forEach(function (doc) { expandBookingDoc(doc.data()); });
+        renderCalendar();
+        updateSummary();
+      }, function (err) {
+        document.getElementById("bookUnavailable").hidden = false;
+      });
+    }).catch(function () {
+      document.getElementById("bookUnavailable").hidden = false;
+    });
+  }
+
+  function showConfirm(msg, ok) {
+    var el = document.getElementById("bookConfirm");
+    el.textContent = msg;
+    el.hidden = false;
+    el.className = ok ? "ok" : "";
+  }
+
+  function handleSubmit() {
+    if (!selectedStart) { showConfirm("Pick a start date on the calendar first.", false); return; }
+    var len = currentLength();
+    if (!rangeIsFree(selectedStart, len)) { showConfirm("Those dates overlap an existing booking.", false); return; }
+
+    var name = document.getElementById("riderName").value.trim();
+    var email = document.getElementById("riderEmail").value.trim();
+    if (!name || !email) { showConfirm("Add your name and email so we can confirm.", false); return; }
+
+    var deliveryOpt = document.querySelector('input[name="deliveryOption"]:checked').value;
+    var address = document.getElementById("address").value.trim();
+    if (deliveryOpt === "delivery" && !address) { showConfirm("Add a delivery address in Groningen or Drenthe.", false); return; }
+
+    var bike = document.querySelector('input[name="bikeChoice"]:checked').value;
+    var notes = document.getElementById("riderNotes").value.trim();
+    var end = addDays(selectedStart, len - 1);
+
+    var payload = {
+      name: name,
+      email: email,
+      bike: bike,
+      packageLength: len,
+      startDate: toKey(selectedStart),
+      endDate: toKey(end),
+      deliveryOption: deliveryOpt,
+      address: deliveryOpt === "delivery" ? address : "",
+      notes: notes,
+      status: "requested",
+      createdAt: new Date().toISOString()
+    };
+
+    var submitBtn = document.getElementById("submitBooking");
+    submitBtn.disabled = true;
+
+    if (!bookingsCol) {
+      showConfirm("Booking storage isn't reachable right now. Email hello@bikepackinggroningen.nl with your dates instead.", false);
+      submitBtn.disabled = false;
+      return;
+    }
+
+    bookingsCol.add(payload).then(function () {
+      showConfirm("Request sent for " + payload.startDate + " to " + payload.endDate + ". We'll email you to confirm.", true);
+      selectedStart = null;
+      document.getElementById("riderName").value = "";
+      document.getElementById("riderEmail").value = "";
+      document.getElementById("riderNotes").value = "";
+      renderCalendar();
+      updateSummary();
+      submitBtn.disabled = false;
+    }).catch(function () {
+      showConfirm("Couldn't send that request, please try again or email hello@bikepackinggroningen.nl.", false);
+      submitBtn.disabled = false;
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    renderCalendar();
+    updateSummary();
+    initDb();
+
+    document.getElementById("calPrev").addEventListener("click", function () {
+      viewMonth.setMonth(viewMonth.getMonth() - 1);
+      renderCalendar();
+    });
+    document.getElementById("calNext").addEventListener("click", function () {
+      viewMonth.setMonth(viewMonth.getMonth() + 1);
+      renderCalendar();
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('input[name="pkgLen"]'), function (el) {
+      el.addEventListener("change", function () { renderCalendar(); updateSummary(); });
+    });
+    document.getElementById("optPickup").addEventListener("change", function () {
+      document.getElementById("addressWrap").hidden = true;
+    });
+    document.getElementById("optDelivery").addEventListener("change", function () {
+      document.getElementById("addressWrap").hidden = false;
+    });
+    document.getElementById("submitBooking").addEventListener("click", handleSubmit);
+  });
+})();
+</script>
+</body>
+</html>
